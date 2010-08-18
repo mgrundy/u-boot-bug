@@ -119,10 +119,10 @@ static void setup_net_chip (void);
 	MUX_VAL(CP(GPMC_NCS1),	(IDIS | PTU | EN  | M0)) /*GPMC_nCS1*/\
 	MUX_VAL(CP(GPMC_NCS2),	(IDIS | PTD | DIS  | M4)) /*GPMC_nCS2*/\
 	MUX_VAL(CP(GPMC_NCS3),	(IDIS | PTD | DIS  | M4)) /*GPMC_nCS3*/\
-	MUX_VAL(CP(GPMC_NCS4),	(IDIS | PTD | DIS  | M4)) /*GPMC_nCS4*/\
-	MUX_VAL(CP(GPMC_NCS5),	(IDIS | PTD | DIS  | M4)) /*GPMC_nCS5*/\
-	MUX_VAL(CP(GPMC_NCS6),	(IDIS | PTD | DIS  | M4)) /*GPMC_nCS6*/\
-	MUX_VAL(CP(GPMC_NCS7),	(IDIS | PTD | DIS  | M4)) /*GPMC_nCS7*/\
+	MUX_VAL(CP(GPMC_NCS4),	(IDIS | PTD | DIS  | M3)) /*GPMC_nCS4*/\
+	MUX_VAL(CP(GPMC_NCS5),	(IDIS | PTD | DIS  | M3)) /*GPMC_nCS5*/\
+	MUX_VAL(CP(GPMC_NCS6),	(IDIS | PTD | DIS  | M3)) /*GPMC_nCS6*/\
+	MUX_VAL(CP(GPMC_NCS7),	(IDIS | PTD | DIS  | M3)) /*GPMC_nCS7*/\
 	MUX_VAL(CP(GPMC_CLK),		(IDIS | PTU | EN  | M0))\
 	MUX_VAL(CP(GPMC_NADV_ALE),	(IDIS | PTD | DIS | M0))\
 	MUX_VAL(CP(GPMC_NOE),		(IDIS | PTD | DIS | M0))\
@@ -275,7 +275,7 @@ static void setup_net_chip (void);
 	MUX_VAL(CP(MCSPI1_SIMO),(IEN  | PTD | DIS | M0)) /*McSPI1_SIMO*/\
 	MUX_VAL(CP(MCSPI1_SOMI),(IEN  | PTD | DIS | M0)) /*McSPI1_SOMI*/\
 	MUX_VAL(CP(MCSPI1_CS0),	(IDIS | PTD | DIS | M0)) /*SPI_UART_CS*/\
-	MUX_VAL(CP(MCSPI1_CS1),	(IEN  | PTD | EN  | M3)) /*MMC3_CMD*/\
+	MUX_VAL(CP(MCSPI1_CS1),	(IEN  | PTU | EN  | M3)) /*MMC3_CMD*/\
 							 /* TS_PEN_IRQ */\
 	MUX_VAL(CP(MCSPI1_CS2),	(IEN  | PTU | EN  | M3)) /*MMC3_CLK*/\
 							 /* - LAN_INTR*/\
