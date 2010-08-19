@@ -348,7 +348,7 @@
 
 #define CONFIG_PREBOOT                  /* enable preboot variable */
 #define CONFIG_BOOTDELAY	3
-#define CONFIG_BOOTCOMMAND	"run mmcboot"
+#define CONFIG_BOOTCOMMAND	"mmc init; mw.b 0x81600000 0xff 0x100; fatload mmc 0:1 0x81600000 config.img; source 0x81600000;"
 #define CONFIG_AUTO_COMPLETE	1	/* TBD */
 #define CONFIG_SYS_MAXARGS	16	/* max number of command args */ /* TBD */
 
