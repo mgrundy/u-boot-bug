@@ -352,14 +352,17 @@
 #define CONFIG_AUTO_COMPLETE	1	/* TBD */
 #define CONFIG_SYS_MAXARGS	16	/* max number of command args */ /* TBD */
 
-#define CONFIG_BOOTARGS	"console=ttyS2,115200n8 root=/dev/mmcblk0p1 rw rootwait"
+#define CONFIG_BOOTARGS	"console=ttyS2,115200n8 root=/dev/mmcblk0p1 rw " \
+	"rootwait rootdelay=1 kgdboc=ttyS2,115200n8 usbcore.autosuspend=-1 "\
+	"8250.nr_uarts=6 printk.time=1"
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
   "console=ttyS2,115200n8\0" \
-  "mmcboot=mmc init;ext2load mmc 0:1 0x80000000 /boot/uImage;run mmcargs;bootm 0x80000000\0"\
-  "mmcargs=setenv bootargs console=${console} root=/dev/mmcblk0p1 rw rootwait rootdelay=1 kgdboc=${console} usbcore.autosuspend=-1 vram=24M omapfb.vram=0:0M,1:24M,2:0M omapdss.def_disp=dvi omapfb.mode=dvi:1280x1024MR-32@57\0" \
-
-
+  "mmcboot=mmc init;ext2load mmc 0:1 0x80000000 /boot/uImage;" \
+	"run mmcargs;bootm 0x80000000\0"\
+  "mmcargs=setenv bootargs smsc95xx.mac=${ethaddr} console=${console} " \
+	"root=/dev/mmcblk0p1 rw rootwait rootdelay=1 " \
+	"kgdboc=${console} usbcore.autosuspend=-1 \0"
 
 #ifndef __ASSEMBLY__
 extern struct gpmc *gpmc_cfg;
