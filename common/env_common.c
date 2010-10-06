@@ -230,7 +230,7 @@ void env_relocate (void)
 #if defined(CONFIG_ENV_IS_NOWHERE)	/* Environment not changable */
 		puts ("Using default environment\n\n");
 #else
-		puts ("Using default environment\n\n");
+		puts ("*** Warning - bad CRC, using default environment\n\n");
 		show_boot_progress (-60);
 #endif
 		set_default_env();
