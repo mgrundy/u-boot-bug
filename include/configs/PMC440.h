@@ -72,9 +72,6 @@
 #define CONFIG_SYS_PCI_MEMBASE3	CONFIG_SYS_PCI_MEMBASE2 + 0x10000000
 #define CONFIG_SYS_PCI_MEMSIZE		0x80000000	/* 2GB! */
 
-/* Don't change either of these */
-#define CONFIG_SYS_PERIPHERAL_BASE	0xef600000	/* internal peripherals */
-
 #define CONFIG_SYS_USB2D0_BASE		0xe0000100
 #define CONFIG_SYS_USB_DEVICE		0xe0000000
 #define CONFIG_SYS_USB_HOST		0xe0000400
@@ -90,15 +87,19 @@
 #define CONFIG_SYS_INIT_RAM_END	(4 << 10)
 #define CONFIG_SYS_GBL_DATA_SIZE	256	/* num bytes initial data */
 #define CONFIG_SYS_GBL_DATA_OFFSET	(CONFIG_SYS_INIT_RAM_END - CONFIG_SYS_GBL_DATA_SIZE)
-#define CONFIG_SYS_INIT_SP_OFFSET	CONFIG_SYS_POST_WORD_ADDR
+#define CONFIG_SYS_INIT_SP_OFFSET	(CONFIG_SYS_GBL_DATA_OFFSET - 0x4)
 
 /*-----------------------------------------------------------------------
  * Serial Port
  *----------------------------------------------------------------------*/
+#define CONFIG_CONS_INDEX	1	/* Use UART0			*/
+#define CONFIG_SYS_NS16550
+#define CONFIG_SYS_NS16550_SERIAL
+#define CONFIG_SYS_NS16550_REG_SIZE	1
+#define CONFIG_SYS_NS16550_CLK		get_serial_clock()
 #undef CONFIG_SYS_EXT_SERIAL_CLOCK
 #define CONFIG_BAUDRATE		115200
-#define CONFIG_SERIAL_MULTI	1
-#undef CONFIG_UART1_CONSOLE	/* console on front panel */
+#define CONFIG_SERIAL_MULTI     1
 
 #define CONFIG_SYS_BAUDRATE_TABLE						\
 	{300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200}
@@ -373,7 +374,6 @@
 				 CONFIG_SYS_POST_ETHER  |	\
 				 CONFIG_SYS_POST_SPR)
 
-#define CONFIG_SYS_POST_WORD_ADDR	(CONFIG_SYS_GBL_DATA_OFFSET - 0x4)
 #define CONFIG_LOGBUFFER
 #define CONFIG_SYS_POST_CACHE_ADDR	0x7fff0000	/* free virtual address     */
 

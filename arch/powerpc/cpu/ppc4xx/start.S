@@ -64,7 +64,7 @@
  *  address and (s)dram will be positioned at address 0
  */
 #include <config.h>
-#include <ppc4xx.h>
+#include <asm/ppc4xx.h>
 #include <timestamp.h>
 #include <version.h>
 
@@ -340,6 +340,9 @@ _start_440:
 	mfspr	r1,SPRN_DBCR0
 	andis.	r1, r1, 0x8000	/* test DBCR0[EDM] bit			*/
 	bne	skip_debug_init	/* if set, don't clear debug register	*/
+	mfspr	r1,SPRN_CCR0
+	ori	r1,r1,CCR0_DTB@l /* Disable Trace Broadcast */
+	mtspr	SPRN_CCR0,r1
 	mtspr	SPRN_DBCR0,r0
 	mtspr	SPRN_DBCR1,r0
 	mtspr	SPRN_DBCR2,r0
@@ -700,7 +703,8 @@ _start:
     defined(CONFIG_440SP) || defined(CONFIG_440SPE) || \
     defined(CONFIG_460SX)
 	mtdcr	L2_CACHE_CFG,r0		/* Ensure L2 Cache is off */
-#elif defined(CONFIG_460EX) || defined(CONFIG_460GT)
+#elif defined(CONFIG_460EX) || defined(CONFIG_460GT) || \
+      defined(CONFIG_APM821XX)
 	lis	r1, 0x0000
 	ori	r1,r1,0x0008		/* Set L2_CACHE_CFG[RDBW]=1 */
 	mtdcr	L2_CACHE_CFG,r1
@@ -728,7 +732,8 @@ _start:
 	lis	r1, 0x8003
 	ori	r1,r1, 0x0980		/* fourth 64k */
 	mtdcr	ISRAM0_SB3CR,r1
-#elif defined(CONFIG_440SPE) || defined(CONFIG_460EX) || defined(CONFIG_460GT)
+#elif defined(CONFIG_440SPE) || defined(CONFIG_460EX) || \
+      defined(CONFIG_460GT) || defined(CONFIG_APM821XX)
 	lis	r1,0x0000		/* BAS = X_0000_0000 */
 	ori	r1,r1,0x0984		/* first 64k */
 	mtdcr	ISRAM0_SB0CR,r1
@@ -741,7 +746,8 @@ _start:
 	lis	r1, 0x0003
 	ori	r1,r1, 0x0984		/* fourth 64k */
 	mtdcr	ISRAM0_SB3CR,r1
-#if defined(CONFIG_460EX) || defined(CONFIG_460GT)
+#if defined(CONFIG_460EX) || defined(CONFIG_460GT) || \
+    defined(CONFIG_APM821XX)
 	lis	r2,0x7fff
 	ori	r2,r2,0xffff
 	mfdcr	r1,ISRAM1_DPC
@@ -752,7 +758,7 @@ _start:
 	mtdcr	ISRAM1_PMEG,r1
 
 	lis	r1,0x0004		/* BAS = 4_0004_0000 */
-	ori	r1,r1,0x0984		/* 64k */
+	ori     r1,r1,ISRAM1_SIZE       /* ocm size */
 	mtdcr	ISRAM1_SB0CR,r1
 #endif
 #elif defined(CONFIG_460SX)
@@ -1458,6 +1464,11 @@ relocate_code:
 	mtspr	SPRN_DTV2,r6
 	mtspr	SPRN_DTV3,r6
 	msync
+	isync
+
+	/* Invalidate data cache, now no longer our stack */
+	dccci	0,0
+	sync
 	isync
 #endif /* CONFIG_SYS_INIT_RAM_DCACHE */
 

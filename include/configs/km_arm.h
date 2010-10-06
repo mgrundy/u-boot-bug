@@ -142,15 +142,7 @@
 /*
  * I2C related stuff
  */
-#undef	CONFIG_HARD_I2C		/* I2C with hardware support */
 #define	CONFIG_SOFT_I2C		/* I2C bit-banged	*/
-
-#if defined(CONFIG_HARD_I2C)
-#define	CONFIG_I2C_KIRKWOOD
-#define	CONFIG_I2C_KW_REG_BASE		KW_TWSI_BASE
-#define	CONFIG_SYS_I2C_SLAVE		0x0
-#define	CONFIG_SYS_I2C_SPEED		100000
-#endif
 
 #define	CONFIG_KIRKWOOD_GPIO		/* Enable GPIO Support */
 #if defined(CONFIG_SOFT_I2C)
@@ -188,4 +180,8 @@ int get_scl (void);
 #undef	CONFIG_JFFS2_CMDLINE
 #endif
 
+/* additions for new relocation code, must added to all boards */
+#define CONFIG_SYS_SDRAM_BASE		0x00000000
+#define CONFIG_SYS_INIT_SP_ADDR		(0x00000000 + 0x1000 - /* Fix this */ \
+					CONFIG_SYS_GBL_DATA_SIZE)
 #endif /* _CONFIG_KM_ARM_H */

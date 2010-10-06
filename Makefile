@@ -22,7 +22,7 @@
 #
 
 VERSION = 2010
-PATCHLEVEL = 06
+PATCHLEVEL = 09
 SUBLEVEL =
 EXTRAVERSION =
 ifneq "$(SUBLEVEL)" ""
@@ -253,6 +253,13 @@ ifeq ($(SOC),omap4)
 LIBS += $(CPUDIR)/omap-common/libomap-common.a
 endif
 
+ifeq ($(SOC),s5pc1xx)
+LIBS += $(CPUDIR)/s5p-common/libs5p-common.a
+endif
+ifeq ($(SOC),s5pc2xx)
+LIBS += $(CPUDIR)/s5p-common/libs5p-common.a
+endif
+
 LIBS := $(addprefix $(obj),$(LIBS))
 .PHONY : $(LIBS) $(TIMESTAMP_FILE) $(VERSION_FILE)
 
@@ -397,14 +404,8 @@ $(TIMESTAMP_FILE):
 		@LC_ALL=C date +'#define U_BOOT_DATE "%b %d %C%y"' > $@
 		@LC_ALL=C date +'#define U_BOOT_TIME "%T"' >> $@
 
-gdbtools:
-		$(MAKE) -C tools/gdb all || exit 1
-
 updater:
-		$(MAKE) -C tools/updater all || exit 1
-
-env:
-		$(MAKE) -C tools/env all MTD_VERSION=${MTD_VERSION} || exit 1
+		$(MAKE) -C tools/updater all
 
 # Explicitly make _depend in subdirs containing multiple targets to prevent
 # parallel sub-makes creating .depend files simultaneously.
@@ -459,16 +460,21 @@ $(obj)include/autoconf.mk: $(obj)include/config.h
 else	# !config.mk
 all $(obj)u-boot.hex $(obj)u-boot.srec $(obj)u-boot.bin \
 $(obj)u-boot.img $(obj)u-boot.dis $(obj)u-boot \
-$(filter-out tools,$(SUBDIRS)) $(TIMESTAMP_FILE) $(VERSION_FILE) gdbtools \
-updater env depend dep tags ctags etags cscope $(obj)System.map:
+$(filter-out tools,$(SUBDIRS)) $(TIMESTAMP_FILE) $(VERSION_FILE) \
+updater depend dep tags ctags etags cscope $(obj)System.map:
 	@echo "System not configured - see README" >&2
 	@ exit 1
 
 tools:
-	$(MAKE) -C tools
-tools-all:
-	$(MAKE) -C tools HOST_TOOLS_ALL=y
+	$(MAKE) -C $@ all
 endif	# config.mk
+
+easylogo env gdb:
+	$(MAKE) -C tools/$@ all MTD_VERSION=${MTD_VERSION}
+gdbtools: gdb
+
+tools-all: easylogo env gdb
+	$(MAKE) -C tools HOST_TOOLS_ALL=y
 
 .PHONY : CHANGELOG
 CHANGELOG:
@@ -487,8 +493,9 @@ unconfig:
 %_config::	unconfig
 	@$(MKCONFIG) -A $(@:_config=)
 
-##%: %_config
-##	$(MAKE)
+sinclude .boards.depend
+.boards.depend:	boards.cfg
+	awk '(NF && $$1 !~ /^#/) { print $$1 ": " $$1 "_config; $$(MAKE)" }' $< > $@
 
 #
 # Functions to generate common board directory names
@@ -1883,7 +1890,7 @@ CPUAT91_RAM_config \
 CPUAT91_config	:	unconfig
 	@mkdir -p $(obj)include
 	@echo "#define CONFIG_$(@:_config=) 1"	>$(obj)include/config.h
-	@$(MKCONFIG) -n $@ -a cpuat91 arm arm920t cpuat91 eukrea at91rm9200
+	@$(MKCONFIG) -n $@ -a cpuat91 arm arm920t cpuat91 eukrea at91
 
 #########################################################################
 ## ARM926EJ-S Systems
@@ -2468,7 +2475,7 @@ clean:
 		| xargs rm -f
 
 clobber:	clean
-	@find $(OBJTREE) -type f \( -name .depend \
+	@find $(OBJTREE) -type f \( -name '*.depend' \
 		-o -name '*.srec' -o -name '*.bin' -o -name u-boot.img \) \
 		-print0 \
 		| xargs -0 rm -f

@@ -176,6 +176,12 @@
 #define CONFIG_SYS_MEMTEST_START	0x0100000	/* memtest works on	*/
 #define CONFIG_SYS_MEMTEST_END		0x0C00000	/* 1 ... 12 MB in DRAM	*/
 
+#define CONFIG_CONS_INDEX	1	/* Use UART0			*/
+#define CONFIG_SYS_NS16550
+#define CONFIG_SYS_NS16550_SERIAL
+#define CONFIG_SYS_NS16550_REG_SIZE	1
+#define CONFIG_SYS_NS16550_CLK		get_serial_clock()
+
 #undef	CONFIG_SYS_EXT_SERIAL_CLOCK	       /* no external serial clock used */
 #define CONFIG_SYS_BASE_BAUD       916667
 
@@ -304,10 +310,6 @@
 #define CONFIG_SYS_GBL_DATA_OFFSET	(CONFIG_SYS_INIT_RAM_END - CONFIG_SYS_GBL_DATA_SIZE)
 /* reserve some memory for POST and BOOT limit info */
 #define CONFIG_SYS_INIT_SP_OFFSET	(CONFIG_SYS_GBL_DATA_OFFSET - 32)
-
-#ifdef  CONFIG_POST		/* reserve one word for POST Info */
-#define CONFIG_SYS_POST_WORD_ADDR	(CONFIG_SYS_GBL_DATA_OFFSET - 4)
-#endif
 
 #ifdef CONFIG_BOOTCOUNT_LIMIT /* reserve 2 word for bootcount limit */
 #define CONFIG_SYS_BOOTCOUNT_ADDR (CONFIG_SYS_GBL_DATA_OFFSET - 12)

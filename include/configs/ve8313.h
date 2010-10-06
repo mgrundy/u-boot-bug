@@ -39,6 +39,7 @@
 #define CONFIG_VE8313		1
 
 #define CONFIG_PCI		1
+#define CONFIG_FSL_ELBC		1
 
 #define CONFIG_BOARD_EARLY_INIT_F	1
 
@@ -365,10 +366,10 @@
 
 /*
  * For booting Linux, the board info and command line data
- * have to be in the first 8 MB of memory, since this is
+ * have to be in the first 256 MB of memory, since this is
  * the maximum mapped by the Linux kernel during initialization.
  */
-#define CONFIG_SYS_BOOTMAPSZ	(8 << 20)	/* Initial Memory map for Linux*/
+#define CONFIG_SYS_BOOTMAPSZ	(256 << 20)	/* Initial Memory map for Linux*/
 
 /* 0x64050000 */
 #define CONFIG_SYS_HRCW_LOW (\

@@ -120,6 +120,7 @@
 /* commands to include */
 #include <config_cmd_default.h>
 
+#define CONFIG_CMD_CACHE
 #define CONFIG_CMD_EXT2		/* EXT2 Support			*/
 #define CONFIG_CMD_FAT		/* FAT support			*/
 #define CONFIG_CMD_JFFS2	/* JFFS2 Support		*/
@@ -158,6 +159,7 @@
 /*
  * Board NAND Info.
  */
+#define CONFIG_SYS_NAND_QUIET_TEST	1
 #define CONFIG_NAND_OMAP_GPMC
 #define CONFIG_SYS_NAND_ADDR		NAND_BASE	/* physical address */
 							/* to access nand */
@@ -183,6 +185,7 @@
 	"loadaddr=0x82000000\0" \
 	"usbtty=cdc_acm\0" \
 	"console=ttyS2,115200n8\0" \
+	"mpurate=500\0" \
 	"vram=12M\0" \
 	"dvimode=1024x768MR-16@60\0" \
 	"defaultdisplay=dvi\0" \
@@ -191,6 +194,7 @@
 	"nandroot=/dev/mtdblock4 rw\0" \
 	"nandrootfstype=jffs2\0" \
 	"mmcargs=setenv bootargs console=${console} " \
+		"mpurate=${mpurate} " \
 		"vram=${vram} " \
 		"omapfb.mode=dvi:${dvimode} " \
 		"omapfb.debug=y " \
@@ -198,6 +202,7 @@
 		"root=${mmcroot} " \
 		"rootfstype=${mmcrootfstype}\0" \
 	"nandargs=setenv bootargs console=${console} " \
+		"mpurate=${mpurate} " \
 		"vram=${vram} " \
 		"omapfb.mode=dvi:${dvimode} " \
 		"omapfb.debug=y " \
@@ -334,5 +339,10 @@ extern unsigned int boot_flash_off;
 extern unsigned int boot_flash_sec;
 extern unsigned int boot_flash_type;
 #endif
+
+/* additions for new relocation code, must added to all boards */
+#undef CONFIG_SYS_ARM_WITHOUT_RELOC /* This board is tested with relocation support */
+#define CONFIG_SYS_SDRAM_BASE		PHYS_SDRAM_1
+#define CONFIG_SYS_INIT_SP_ADDR		(LOW_LEVEL_SRAM_STACK - CONFIG_SYS_GBL_DATA_SIZE)
 
 #endif /* __CONFIG_H */

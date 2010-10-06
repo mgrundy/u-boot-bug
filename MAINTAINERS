@@ -152,10 +152,6 @@ Dave Ellis <DGE@sixnetio.com>
 
 	SXNI855T	MPC8xx
 
-Fred Fan <fanyefeng@gmail.com>
-
-	mx51evk		i.MX51
-
 Thomas Frieden <ThomasF@hyperion-entertainment.com>
 
 	AmigaOneG3SE	MPC7xx
@@ -490,6 +486,7 @@ Stephen Williams <steve@icarus.com>
 
 Ilya Yanok <yanok@emcraft.com>
 
+	mpc8308_p1m	MPC8308
 	MPC8308RDB	MPC8308
 
 Roy Zang <tie-fei.zang@freescale.com>
@@ -503,6 +500,10 @@ John Zhan <zhanz@sinovee.com>
 Detlev Zundel <dzu@denx.de>
 
 	inka4x0		MPC5200
+
+Tirumala Marri <tmarri@apm.com>
+
+	bluestone       APM821XX
 
 -------------------------------------------------------------------------
 
@@ -549,6 +550,7 @@ Stefano Babic <sbabic@denx.de>
 
 	polaris		xscale
 	trizepsiv	xscale
+	mx51evk		i.MX51
 
 Dirk Behme <dirk.behme@gmail.com>
 
@@ -806,6 +808,10 @@ Prafulla Wadaskar <prafulla@marvell.com>
 	rd6281a		ARM926EJS (Kirkwood SoC)
 	sheevaplug	ARM926EJS (Kirkwood SoC)
 
+Matthias Weisser <weisserm@arcor.de>
+
+	jadecpu		ARM926EJS (MB86R01 SoC)
+
 Richard Woodruff <r-woodruff2@ti.com>
 
 	omap2420h4	ARM1136EJS
@@ -991,6 +997,7 @@ Blackfin Team <u-boot-devel@blackfin.uclinux.org>
 	BF526-EZBRD	BF526
 	BF527-EZKIT	BF527
 	BF527-EZKIT-V2	BF527
+	BF527-SDP	BF527
 	BF533-EZKIT	BF533
 	BF533-STAMP	BF533
 	BF537-PNAV	BF537
@@ -1020,9 +1027,12 @@ Blackfin Team <u-boot-devel@blackfin.uclinux.org>
 	BF537-srv1	BF537
 
 Wojtek Skulski <skulski@pas.rochester.edu>
+Wojtek Skulski <info@skutek.com>
+Blackfin Team <u-boot-devel@blackfin.uclinux.org>
 Benjamin Matthews <mben12@gmail.com>
 
-	BLACKSTAMP	BF532
+	BlackStamp	BF533
+	BlackVME	BF561
 
 I-SYST Micromodule <support@i-syst.com>
 Blackfin Team <u-boot-devel@blackfin.uclinux.org>
@@ -1037,6 +1047,10 @@ Anton Shurpin <shurpin.aa@niistt.ru>
 Brent Kandetzki <brentk@teleco.com>
 
 	IP04		BF532
+
+Peter Meerwald <devel@bct-electronic.com>
+
+	bct-brettl2	BF536
 
 #########################################################################
 # End of MAINTAINERS list						#

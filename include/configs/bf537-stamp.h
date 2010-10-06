@@ -11,7 +11,6 @@
 /*
  * Processor Settings
  */
-#define CONFIG_BFIN_CPU             bf537-0.2
 #define CONFIG_BFIN_BOOT_MODE       BFIN_BOOT_BYPASS
 
 
@@ -89,10 +88,7 @@
 #define CONFIG_ENV_SPI_MAX_HZ	30000000
 #define CONFIG_SF_DEFAULT_SPEED	30000000
 #define CONFIG_SPI_FLASH
-#define CONFIG_SPI_FLASH_ATMEL
-#define CONFIG_SPI_FLASH_SPANSION
-#define CONFIG_SPI_FLASH_STMICRO
-#define CONFIG_SPI_FLASH_WINBOND
+#define CONFIG_SPI_FLASH_ALL
 
 
 /*
@@ -265,6 +261,7 @@
 #define FLASH_START_POST_BLOCK	11	/* Should > = 11 */
 #define FLASH_END_POST_BLOCK	71	/* Should < = 71 */
 #endif
+#define CONFIG_SYS_POST_WORD_ADDR	0xFF903FFC
 
 /* These are for board tests */
 #if 0

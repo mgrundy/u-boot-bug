@@ -104,6 +104,7 @@
 #define CONFIG_NET_MULTI	1
 #undef  CONFIG_HAS_ETH1
 
+#define CONFIG_PPC4xx_EMAC
 #define CONFIG_MII		1	/* MII PHY management		*/
 #define CONFIG_PHY_ADDR		0	/* PHY address			*/
 #define CONFIG_LXT971_NO_SLEEP	1
@@ -174,6 +175,12 @@
 
 #define CONFIG_SYS_MEMTEST_START	0x0400000 /* memtest works on */
 #define CONFIG_SYS_MEMTEST_END		0x0C00000 /* 4 ... 12 MB in DRAM */
+
+#define CONFIG_CONS_INDEX	1	/* Use UART0			*/
+#define CONFIG_SYS_NS16550
+#define CONFIG_SYS_NS16550_SERIAL
+#define CONFIG_SYS_NS16550_REG_SIZE	1
+#define CONFIG_SYS_NS16550_CLK		get_serial_clock()
 
 #define CONFIG_SYS_EXT_SERIAL_CLOCK    14745600 /* use external serial clock   */
 
@@ -263,16 +270,10 @@
 /*
  * FLASH organization
  */
-#ifndef __ASSEMBLY__
-extern int flash_banks;
-#endif
-
 #define CONFIG_SYS_FLASH_BASE		0xFE000000
 #define CONFIG_SYS_FLASH_CFI		1	/* Flash is CFI conformant */
 #define CONFIG_FLASH_CFI_DRIVER	1	/* Use the common driver */
 #define CONFIG_SYS_MAX_FLASH_SECT	256	/* max num of sects on one chip */
-#define CONFIG_SYS_MAX_FLASH_BANKS	flash_banks /* max num of flash banks */
-					    /* updated in board_early_init_r */
 #define CONFIG_SYS_MAX_FLASH_BANKS_DETECT 2
 #define CONFIG_SYS_FLASH_QUIET_TEST	1
 #define CONFIG_SYS_FLASH_INCREMENT	0x01000000

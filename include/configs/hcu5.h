@@ -70,9 +70,6 @@
 #define CONFIG_SYS_PCI_MEMBASE2	CONFIG_SYS_PCI_MEMBASE1 + 0x10000000
 #define CONFIG_SYS_PCI_MEMBASE3	CONFIG_SYS_PCI_MEMBASE2 + 0x10000000
 
-/* Don't change either of these */
-#define CONFIG_SYS_PERIPHERAL_BASE	0xef600000	/* internal peripherals	*/
-
 #define CONFIG_SYS_USB2D0_BASE		0xe0000100
 #define CONFIG_SYS_USB_DEVICE		0xe0000000
 #define CONFIG_SYS_USB_HOST		0xe0000400
@@ -86,15 +83,13 @@
 #define CONFIG_SYS_INIT_RAM_END	(4 << 10)
 #define CONFIG_SYS_GBL_DATA_SIZE	256		/* num bytes initial data */
 #define CONFIG_SYS_GBL_DATA_OFFSET	(CONFIG_SYS_INIT_RAM_END - CONFIG_SYS_GBL_DATA_SIZE)
-#define CONFIG_SYS_INIT_SP_OFFSET	CONFIG_SYS_POST_WORD_ADDR
+#define CONFIG_SYS_INIT_SP_OFFSET	(CONFIG_SYS_GBL_DATA_OFFSET - 0x4)
 
 /*-----------------------------------------------------------------------
  * Serial Port
  *----------------------------------------------------------------------*/
 #undef CONFIG_SYS_EXT_SERIAL_CLOCK	       /* external serial clock */
 #define CONFIG_BAUDRATE		115200
-#undef CONFIG_SERIAL_SOFTWARE_FIFO
-#undef CONFIG_UART1_CONSOLE
 
 /*-----------------------------------------------------------------------
  * Environment
@@ -212,9 +207,8 @@
 				 CONFIG_SYS_POST_FPU	   | \
 				 CONFIG_SYS_POST_ETHER	   | \
 				 CONFIG_SYS_POST_SPR)
-#define CONFIG_SYS_POST_UART_TABLE	{UART0_BASE}
 
-#define CONFIG_SYS_POST_WORD_ADDR	(CONFIG_SYS_GBL_DATA_OFFSET - 0x4)
+#define CONFIG_SYS_POST_UART_TABLE	{ CONFIG_SYS_NS16550_COM1 }
 #define CONFIG_SYS_POST_CACHE_ADDR	0x7fff0000 /* free virtual address	*/
 #define CONFIG_SYS_CONSOLE_IS_IN_ENV /* Otherwise it catches logbuffer as output */
 

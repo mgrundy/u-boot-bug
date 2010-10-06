@@ -107,18 +107,12 @@ u32 get_sdr_cs_offset(u32 cs)
 /*
  * do_sdrc_init -
  *  - Initialize the SDRAM for use.
- *  - Sets up SDRC timings for CS0
  *  - code called once in C-Stack only context for CS0 and a possible 2nd
  *    time depending on memory configuration from stack+global context
  */
 void do_sdrc_init(u32 cs, u32 early)
 {
-	struct sdrc_actim *sdrc_actim_base;
-
-	if (cs)
-		sdrc_actim_base = (struct sdrc_actim *)SDRC_ACTIM_CTRL1_BASE;
-	else
-		sdrc_actim_base = (struct sdrc_actim *)SDRC_ACTIM_CTRL0_BASE;
+	struct sdrc_actim *sdrc_actim_base0, *sdrc_actim_base1;
 
 	if (early) {
 		/* reset sdrc controller */
@@ -138,24 +132,29 @@ void do_sdrc_init(u32 cs, u32 early)
 		sdelay(0x20000);
 	}
 
-	writel(RASWIDTH_13BITS | CASWIDTH_10BITS | ADDRMUXLEGACY |
-			RAMSIZE_128 | BANKALLOCATION | B32NOT16 | B32NOT16 |
-			DEEPPD | DDR_SDRAM, &sdrc_base->cs[cs].mcfg);
-	writel(ARCV | ARE_ARCV_1, &sdrc_base->cs[cs].rfr_ctrl);
-	writel(V_ACTIMA_165, &sdrc_actim_base->ctrla);
-	writel(V_ACTIMB_165, &sdrc_actim_base->ctrlb);
-
-	writel(CMD_NOP, &sdrc_base->cs[cs].manual);
-	writel(CMD_PRECHARGE, &sdrc_base->cs[cs].manual);
-	writel(CMD_AUTOREFRESH, &sdrc_base->cs[cs].manual);
-	writel(CMD_AUTOREFRESH, &sdrc_base->cs[cs].manual);
+	/*
+	 * SDRC timings are set up by x-load or config header
+	 * We don't need to redo them here.
+	 * Older x-loads configure only CS0
+	 * configure CS1 to handle this ommission
+	 */
+	if (cs) {
+		sdrc_actim_base0 = (struct sdrc_actim *)SDRC_ACTIM_CTRL0_BASE;
+		sdrc_actim_base1 = (struct sdrc_actim *)SDRC_ACTIM_CTRL1_BASE;
+		writel(readl(&sdrc_base->cs[CS0].mcfg),
+			&sdrc_base->cs[CS1].mcfg);
+		writel(readl(&sdrc_base->cs[CS0].rfr_ctrl),
+			&sdrc_base->cs[CS1].rfr_ctrl);
+		writel(readl(&sdrc_actim_base0->ctrla),
+			&sdrc_actim_base1->ctrla);
+		writel(readl(&sdrc_actim_base0->ctrlb),
+			&sdrc_actim_base1->ctrlb);
+	}
 
 	/*
-	 * CAS latency 3, Write Burst = Read Burst, Serial Mode,
-	 * Burst length = 4
+	 * Test ram in this bank
+	 * Disable if bad or not present
 	 */
-	writel(CASL3 | BURSTLENGTH4, &sdrc_base->cs[cs].mr);
-
 	if (!mem_ok(cs))
 		writel(0, &sdrc_base->cs[cs].mcfg);
 }
@@ -164,6 +163,7 @@ void do_sdrc_init(u32 cs, u32 early)
  * dram_init -
  *  - Sets uboots idea of sdram size
  */
+#if defined(CONFIG_SYS_ARM_WITHOUT_RELOC)
 int dram_init(void)
 {
 	DECLARE_GLOBAL_DATA_PTR;
@@ -189,6 +189,43 @@ int dram_init(void)
 
 	return 0;
 }
+#else
+int dram_init(void)
+{
+	DECLARE_GLOBAL_DATA_PTR;
+	unsigned int size0 = 0, size1 = 0;
+
+	size0 = get_sdr_cs_size(CS0);
+	/*
+	 * If a second bank of DDR is attached to CS1 this is
+	 * where it can be started.  Early init code will init
+	 * memory on CS0.
+	 */
+	if ((sysinfo.mtype == DDR_COMBO) || (sysinfo.mtype == DDR_STACKED)) {
+		do_sdrc_init(CS1, NOT_EARLY);
+		make_cs1_contiguous();
+
+		size1 = get_sdr_cs_size(CS1);
+	}
+	gd->ram_size = size0 + size1;
+
+	return 0;
+}
+
+void dram_init_banksize (void)
+{
+	DECLARE_GLOBAL_DATA_PTR;
+	unsigned int size0 = 0, size1 = 0;
+
+	size0 = get_sdr_cs_size(CS0);
+	size1 = get_sdr_cs_size(CS1);
+
+	gd->bd->bi_dram[0].start = PHYS_SDRAM_1;
+	gd->bd->bi_dram[0].size = size0;
+	gd->bd->bi_dram[1].start = PHYS_SDRAM_1 + get_sdr_cs_offset(CS1);
+	gd->bd->bi_dram[1].size = size1;
+}
+#endif
 
 /*
  * mem_init -
