@@ -1152,7 +1152,7 @@ struct malloc_chunk
   INTERNAL_SIZE_T size;      /* Size in bytes, including overhead. */
   struct malloc_chunk* fd;   /* double links -- used only if free. */
   struct malloc_chunk* bk;
-};
+} __attribute__((__may_alias__)) ;
 
 typedef struct malloc_chunk* mchunkptr;
 
@@ -1491,7 +1491,7 @@ static mbinptr av_[NAV * 2 + 2] = {
  IAV(120), IAV(121), IAV(122), IAV(123), IAV(124), IAV(125), IAV(126), IAV(127)
 };
 
-#ifndef CONFIG_RELOC_FIXUP_WORKS
+#ifdef CONFIG_NEEDS_MANUAL_RELOC
 void malloc_bin_reloc (void)
 {
 	unsigned long *p = (unsigned long *)(&av_[2]);

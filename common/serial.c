@@ -30,7 +30,7 @@ DECLARE_GLOBAL_DATA_PTR;
 static struct serial_device *serial_devices = NULL;
 static struct serial_device *serial_current = NULL;
 
-#if !defined(CONFIG_LWMON) && !defined(CONFIG_PXA27X)
+#if !defined(CONFIG_LWMON) && !defined(CONFIG_PXA250) && !defined(CONFIG_PXA27X)
 struct serial_device *__default_serial_console (void)
 {
 #if defined(CONFIG_8xx_CONS_SMC1) || defined(CONFIG_8xx_CONS_SMC2)
@@ -54,6 +54,7 @@ struct serial_device *__default_serial_console (void)
 #else
 #error "Bad CONFIG_CONS_INDEX."
 #endif
+#else
 	return &serial0_device;
 #endif
 #elif defined(CONFIG_MPC512X)
@@ -98,7 +99,7 @@ struct serial_device *default_serial_console(void) __attribute__((weak, alias("_
 
 int serial_register (struct serial_device *dev)
 {
-#ifndef CONFIG_RELOC_FIXUP_WORKS
+#ifdef CONFIG_NEEDS_MANUAL_RELOC
 	dev->init += gd->reloc_off;
 	dev->setbrg += gd->reloc_off;
 	dev->getc += gd->reloc_off;

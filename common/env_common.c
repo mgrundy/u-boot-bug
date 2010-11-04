@@ -227,13 +227,18 @@ int env_import(const char *buf, int check)
 
 void env_relocate (void)
 {
+#if defined(CONFIG_NEEDS_MANUAL_RELOC)
+	extern void env_reloc(void);
+
+	env_reloc();
+#endif
 	if (gd->env_valid == 0) {
 #if defined(CONFIG_ENV_IS_NOWHERE)	/* Environment not changable */
 		set_default_env(NULL);
 #else
 		show_boot_progress (-60);
-#endif
 		set_default_env("!bad CRC");
+#endif
 	} else {
 		env_relocate_spec ();
 	}

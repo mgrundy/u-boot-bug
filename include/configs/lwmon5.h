@@ -36,6 +36,11 @@
 #define CONFIG_440EPX		1		/* Specific PPC440EPx	*/
 #define CONFIG_440		1		/* ... PPC440 family	*/
 #define CONFIG_4xx		1		/* ... PPC4xx family	*/
+
+#ifndef CONFIG_SYS_TEXT_BASE
+#define CONFIG_SYS_TEXT_BASE	0xFFF80000
+#endif
+
 #define CONFIG_SYS_CLK_FREQ	33300000	/* external freq to pll	*/
 
 #define CONFIG_BOARD_EARLY_INIT_F	/* Call board_early_init_f	*/
@@ -48,7 +53,7 @@
  * Base addresses -- Note these are effective addresses where the
  * actual resources get mapped (not physical addresses)
  */
-#define CONFIG_SYS_MONITOR_BASE		TEXT_BASE	/* Start of U-Boot	*/
+#define CONFIG_SYS_MONITOR_BASE		CONFIG_SYS_TEXT_BASE	/* Start of U-Boot	*/
 #define CONFIG_SYS_MONITOR_LEN		(0xFFFFFFFF - CONFIG_SYS_MONITOR_BASE + 1)
 #define CONFIG_SYS_MALLOC_LEN		(1 << 20)	/* Reserved for malloc	*/
 
@@ -82,10 +87,9 @@
  */
 #define CONFIG_SYS_INIT_RAM_DCACHE	1		/* d-cache as init ram	*/
 #define CONFIG_SYS_INIT_RAM_ADDR	0x70000000		/* DCache       */
-#define CONFIG_SYS_INIT_RAM_END		(4 << 10)
-#define CONFIG_SYS_GBL_DATA_SIZE	256		/* num bytes initial data*/
-#define CONFIG_SYS_GBL_DATA_OFFSET	(CONFIG_SYS_INIT_RAM_END - \
-					 CONFIG_SYS_GBL_DATA_SIZE)
+#define CONFIG_SYS_INIT_RAM_SIZE		(4 << 10)
+#define CONFIG_SYS_GBL_DATA_OFFSET	(CONFIG_SYS_INIT_RAM_SIZE - \
+					 GENERATED_GBL_DATA_SIZE)
 #define CONFIG_SYS_INIT_SP_OFFSET	CONFIG_SYS_GBL_DATA_OFFSET
 /* unused GPT0 COMP reg	*/
 #define CONFIG_SYS_POST_WORD_ADDR	(CONFIG_SYS_PERIPHERAL_BASE + GPT0_COMP6)
@@ -187,6 +191,17 @@
 /* Define here the base-addresses of the UARTs to test in POST */
 #define CONFIG_SYS_POST_UART_TABLE	{ CONFIG_SYS_NS16550_COM1, \
 			CONFIG_SYS_NS16550_COM2 }
+
+#define CONFIG_POST_UART  {				\
+	"UART test",					\
+	"uart",						\
+	"This test verifies the UART operation.",	\
+	POST_RAM | POST_SLOWTEST | POST_ALWAYS | POST_MANUAL,	\
+	&uart_post_test,				\
+	NULL,						\
+	NULL,						\
+	CONFIG_SYS_POST_UART				\
+	}
 
 #define CONFIG_POST_WATCHDOG  {				\
 	"Watchdog timer test",				\
@@ -290,14 +305,13 @@
 #define CONFIG_SYS_I2C_KEYBD_ADDR	0x56	/* PIC LWE keyboard		*/
 #define CONFIG_SYS_I2C_DSPIC_IO_ADDR	0x57	/* PIC I/O addr               */
 
-#define I2C_ADDR_LIST	{						\
-			CONFIG_SYS_I2C_RTC_ADDR,			\
-			CONFIG_SYS_I2C_EEPROM_CPU_ADDR,			\
-			CONFIG_SYS_I2C_EEPROM_MB_ADDR,			\
-			CONFIG_SYS_I2C_DSPIC_ADDR,			\
-			CONFIG_SYS_I2C_DSPIC_2_ADDR,			\
-			CONFIG_SYS_I2C_DSPIC_KEYB_ADDR,			\
-			CONFIG_SYS_I2C_DSPIC_IO_ADDR }
+#define CONFIG_SYS_POST_I2C_ADDRS	{CONFIG_SYS_I2C_RTC_ADDR,	\
+					 CONFIG_SYS_I2C_EEPROM_CPU_ADDR,\
+					 CONFIG_SYS_I2C_EEPROM_MB_ADDR,	\
+					 CONFIG_SYS_I2C_DSPIC_ADDR,	\
+					 CONFIG_SYS_I2C_DSPIC_2_ADDR,	\
+					 CONFIG_SYS_I2C_DSPIC_KEYB_ADDR,\
+					 CONFIG_SYS_I2C_DSPIC_IO_ADDR }
 
 /*
  * Pass open firmware flat tree
@@ -643,14 +657,6 @@
 {GPIO1_BASE, GPIO_OUT, GPIO_SEL , GPIO_OUT_0}, /* GPIO63  Unselect via TraceSelect Bit	*/	\
 }											\
 }
-
-/*
- * Internal Definitions
- *
- * Boot Flags
- */
-#define BOOTFLAG_COLD	0x01		/* Normal Power-On: Boot from FLASH	*/
-#define BOOTFLAG_WARM	0x02		/* Software reboot			*/
 
 #if defined(CONFIG_CMD_KGDB)
 #define CONFIG_KGDB_BAUDRATE	230400	/* speed to run kgdb serial port */

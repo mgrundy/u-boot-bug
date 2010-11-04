@@ -37,6 +37,8 @@
 #define CONFIG_4xx		1	/* ...member of PPC4xx family	*/
 #define CONFIG_ERIC		1	/* ...on a ERIC board	*/
 
+#define	CONFIG_SYS_TEXT_BASE	0xFFFC0000
+
 #define	CONFIG_BOARD_EARLY_INIT_F 1	/* run board_early_init_f() */
 
 #define CONFIG_SYS_CLK_FREQ	33333333 /* external frequency to pll	*/
@@ -350,9 +352,8 @@
  * Definitions for initial stack pointer and data area (in DPRAM)
  */
 #define CONFIG_SYS_INIT_RAM_ADDR	0x00df0000  /* inside of SDRAM		       */
-#define CONFIG_SYS_INIT_RAM_END	0x0f00	/* End of used area in RAM	       */
-#define CONFIG_SYS_GBL_DATA_SIZE	64  /* size in bytes reserved for initial data */
-#define CONFIG_SYS_GBL_DATA_OFFSET	(CONFIG_SYS_INIT_RAM_END - CONFIG_SYS_GBL_DATA_SIZE)
+#define CONFIG_SYS_INIT_RAM_SIZE	0x0f00	/* Size of used area in RAM	       */
+#define CONFIG_SYS_GBL_DATA_OFFSET	(CONFIG_SYS_INIT_RAM_SIZE - GENERATED_GBL_DATA_SIZE)
 #define CONFIG_SYS_INIT_SP_OFFSET	CONFIG_SYS_GBL_DATA_OFFSET
 
 /*-----------------------------------------------------------------------
@@ -360,14 +361,6 @@
  * (to get SDRAM settings)
  */
 #define SPD_EEPROM_ADDRESS      0x50
-
-/*
- * Internal Definitions
- *
- * Boot Flags
- */
-#define BOOTFLAG_COLD	0x01		/* Normal Power-On: Boot from FLASH	*/
-#define BOOTFLAG_WARM	0x02		/* Software reboot			*/
 
 #if defined(CONFIG_CMD_KGDB)
 #define CONFIG_KGDB_BAUDRATE	230400	/* speed to run kgdb serial port */

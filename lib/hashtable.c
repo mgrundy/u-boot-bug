@@ -45,6 +45,9 @@
 # include <linux/string.h>
 #endif
 
+#ifndef	CONFIG_ENV_MIN_ENTRIES	/* minimum number of entries */
+#define	CONFIG_ENV_MIN_ENTRIES 64
+#endif
 #ifndef	CONFIG_ENV_MAX_ENTRIES	/* maximum number of entries */
 #define	CONFIG_ENV_MAX_ENTRIES 512
 #endif
@@ -53,7 +56,7 @@
 
 /*
  * [Aho,Sethi,Ullman] Compilers: Principles, Techniques and Tools, 1986
- * [Knuth]            The Art of Computer Programming, part 3 (6.4)
+ * [Knuth]	      The Art of Computer Programming, part 3 (6.4)
  */
 
 /*
@@ -249,7 +252,7 @@ int hsearch_r(ENTRY item, ACTION action, ENTRY ** retval,
 
 	if (htab->table[idx].used) {
 		/*
-                 * Further action might be required according to the
+		 * Further action might be required according to the
 		 * action value.
 		 */
 		unsigned hval2;
@@ -280,8 +283,8 @@ int hsearch_r(ENTRY item, ACTION action, ENTRY ** retval,
 
 		do {
 			/*
-                         * Because SIZE is prime this guarantees to
-                         * step through all available indices.
+			 * Because SIZE is prime this guarantees to
+			 * step through all available indices.
 			 */
 			if (idx <= hval2)
 				idx = htab->size + idx - hval2;
@@ -320,8 +323,8 @@ int hsearch_r(ENTRY item, ACTION action, ENTRY ** retval,
 	/* An empty bucket has been found. */
 	if (action == ENTER) {
 		/*
-                 * If table is full and another entry should be
-                 * entered return with error.
+		 * If table is full and another entry should be
+		 * entered return with error.
 		 */
 		if (htab->filled == htab->size) {
 			__set_errno(ENOMEM);
@@ -647,13 +650,14 @@ int himport_r(struct hsearch_data *htab,
 	 * (CONFIG_ENV_SIZE).  This heuristics will result in
 	 * unreasonably large numbers (and thus memory footprint) for
 	 * big flash environments (>8,000 entries for 64 KB
-	 * envrionment size), so we clip it to a reasonable value
-	 * (which can be overwritten in the board config file if
-	 * needed).
+	 * envrionment size), so we clip it to a reasonable value.
+	 * On the other hand we need to add some more entries for free
+	 * space when importing very small buffers. Both boundaries can
+	 * be overwritten in the board config file if needed.
 	 */
 
 	if (!htab->table) {
-		int nent = size / 8;
+		int nent = CONFIG_ENV_MIN_ENTRIES + size / 8;
 
 		if (nent > CONFIG_ENV_MAX_ENTRIES)
 			nent = CONFIG_ENV_MAX_ENTRIES;

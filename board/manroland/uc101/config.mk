@@ -21,22 +21,4 @@
 # MA 02111-1307 USA
 #
 
-#
-# INKA 4X0 board:
-#
-#	Valid values for TEXT_BASE are:
-#
-#	0xFFE00000   boot high
-#
-#	0x00100000   boot from RAM (for testing only)
-#
-
-ifndef TEXT_BASE
-## Standard: boot high
-TEXT_BASE = 0xFFF00000
-## For testing: boot from RAM
-#TEXT_BASE = 0x00100000
-endif
-
-PLATFORM_CPPFLAGS += -DTEXT_BASE=$(TEXT_BASE) -I$(TOPDIR)/board
 LDSCRIPT := $(SRCTREE)/arch/powerpc/cpu/mpc5xxx/u-boot-customlayout.lds
